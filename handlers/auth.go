@@ -150,7 +150,6 @@ func (h *handlerAuth) CheckAuth(w http.ResponseWriter, r *http.Request) {
 	CheckAuthResponse := authdto.CheckAuthResponse{
 		Fullname:  user.FullName,
 		Email:     user.Email,
-		Address:   user.Address,
 	}
 
 	w.Header().Set("Content-Type", "application/json")

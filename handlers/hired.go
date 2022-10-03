@@ -56,10 +56,29 @@ func (h *handlerHired) GetHired(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	orderTo, _ := h.HiredRepository.GetOrderTo(hired.OrderToID)
+
+	hired, _ = h.HiredRepository.GetHired(hired.ID)
+
+	orderToResponse := models.HiredResponse{
+		ID:             hired.ID,
+		Title:          hired.Title,
+		DescriptionJob: hired.DescriptionJob,
+		StartProject:   hired.StartProject,
+		EndProject:     hired.EndProject,
+		Price:          hired.Price,
+		User:           hired.User,
+		OrderTo: models.OrderToHired{
+			ID:       orderTo.ID,
+			FullName: orderTo.FullName,
+			Email:    orderTo.Email,
+		},
+	}
+
 	// Create Embed Path File on Image property here ...
 
 	w.WriteHeader(http.StatusOK)
-	response := dto.SuccessResult{Code: http.StatusOK, Data: convertResponseHired(hired)}
+	response := dto.SuccessResult{Code: http.StatusOK, Data: orderToResponse}
 	json.NewEncoder(w).Encode(response)
 }
 
@@ -139,7 +158,11 @@ func convertResponseHired(u models.Hired) models.HiredResponse {
 		StartProject:   u.StartProject,
 		EndProject:     u.EndProject,
 		Price:          u.Price,
-		User:           u.User,
-		OrderTo:        u.OrderTo,
+		// UserID:         0,
+		User: u.User,
+		// OrderToID:      0,
+		OrderTo: models.OrderToHired{ID: u.OrderTo.ID, FullName: u.OrderTo.Email, Email: u.OrderTo.Email},
+		// CreatedAt:      time.Time{},
+		// UpdatedAt:      time.Time{},
 	}
 }

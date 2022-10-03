@@ -3,6 +3,7 @@ package handlers
 import (
 	"encoding/json"
 	"net/http"
+	"os"
 	"strconv"
 	dto "waysgallery/dto/result"
 	usersdto "waysgallery/dto/users"
@@ -21,6 +22,8 @@ func HandlerUser(UserRepository repositories.UserRepository) *handlerUser {
 	return &handlerUser{UserRepository}
 }
 
+var PathFile = os.Getenv("PATH_FILE")
+
 func (h *handlerUser) FindUsers(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
@@ -29,6 +32,28 @@ func (h *handlerUser) FindUsers(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
 		json.NewEncoder(w).Encode(err.Error())
 	}
+
+	// userResponse := make([]usersdto.UserResponse, 0)
+
+	// for _, user := range users {
+	// 	userResponse = append(userResponse, usersdto.UserResponse{
+	// 		ID: user.ID,
+	// 		FullName: user.FullName,
+	// 		Email: user.Email,
+	// 		Greeting: user.Greeting,
+	// 		Posts: user.
+	// 	})
+	// }
+
+	// var responseUsers []usersdto.UserDetailResponse
+	// for _, t := range users {
+	// 	responseUsers = append(responseUsers, usersdto.UserDetailResponse(convertResponse(t)))
+	// }
+
+	// for i, t := range responseUsers {
+	// 	photoPath := os.Getenv("PATH_FILE") + t.Posts
+	// 	responseTransaction[i].Product.Image = imagePath
+	// }
 
 	w.WriteHeader(http.StatusOK)
 	response := dto.SuccessResult{Code: http.StatusOK, Data: users}
@@ -123,6 +148,10 @@ func (h *handlerUser) UpdateUser(w http.ResponseWriter, r *http.Request) {
 		user.FullName = request.FullName
 	}
 
+	if request.Greeting != "" {
+		user.Greeting = request.Greeting
+	}
+
 	data, err := h.UserRepository.UpdateUser(user)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
@@ -167,6 +196,7 @@ func convertResponse(u models.User) usersdto.UserResponse {
 		Email:    u.Email,
 		Password: u.Password,
 		FullName: u.FullName,
+		Greeting: u.Greeting,
 	}
 }
 

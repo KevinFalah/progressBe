@@ -17,6 +17,7 @@ type Hired struct {
 	UpdatedAt      time.Time          `json:"-"`
 }
 
+
 type HiredResponse struct {
 	ID             int                `json:"id"`
 	Title          string             `json:"title"`

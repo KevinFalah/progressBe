@@ -27,6 +27,9 @@ func main() {
 
 	r := mux.NewRouter()
 
+	r.PathPrefix("/uploads").Handler(http.StripPrefix("/uploads/", http.FileServer(http.Dir("./uploads"))))
+
+
 	routes.RouteInit(r.PathPrefix("/api/v1").Subrouter())
 
 		// Setup allowed Header, Method, and Origin for CORS on this below code ...

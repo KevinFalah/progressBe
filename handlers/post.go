@@ -3,6 +3,7 @@ package handlers
 import (
 	"encoding/json"
 	"net/http"
+	"os"
 	"strconv"
 	postdto "waysgallery/dto/post"
 	dto "waysgallery/dto/result"
@@ -36,6 +37,11 @@ func (h *handlerPost) FindPosts(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Create Embed Path File on Image property here ...
+	// filePath := os.Getenv("PATH_FILE")
+
+	// for i, p := range posts {
+	// 	posts[i].Photo = os.Getenv("PATH_FILE") + p.Photo
+	// }
 
 	w.WriteHeader(http.StatusOK)
 	response := dto.SuccessResult{Code: http.StatusOK, Data: posts}
@@ -57,11 +63,40 @@ func (h *handlerPost) GetPost(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Create Embed Path File on Image property here ...
+	// literatur.Photo = os.Getenv("PATH_FILE") + literatur.Photo
 
 	w.WriteHeader(http.StatusOK)
-	response := dto.SuccessResult{Code: http.StatusOK, Data: convertResponsePost(post)}
+	response := dto.SuccessResult{Code: http.StatusOK, Data: post}
 	json.NewEncoder(w).Encode(response)
 }
+
+// func (h *handlerPost) GetPost(w http.ResponseWriter, r *http.Request) {
+// 	w.Header().Set("Content-Type", "application/json")
+
+// 	id, _ := strconv.Atoi(mux.Vars(r)["id"])
+
+// 	var post models.Post
+// 	post, err := h.PostRepository.GetPost(id)
+// 	if err != nil {
+// 		w.WriteHeader(http.StatusInternalServerError)
+// 		response := dto.ErrorResult{Code: http.StatusBadRequest, Message: err.Error()}
+// 		json.NewEncoder(w).Encode(response)
+// 		return
+// 	}
+// 	filePath := os.Getenv("PATH_FILE")
+
+// 	// Create Embed Path File on Image property here ...
+// 	postResponse := postdto.PostResponse{
+// 		ID:          post.ID,
+// 		Photo:       filePath + post.Photo,
+// 		Title:       post.Title,
+// 		Description: post.Description,
+// 	}
+
+// 	w.WriteHeader(http.StatusOK)
+// 	response := dto.SuccessResult{Code: http.StatusOK, Data: postResponse}
+// 	json.NewEncoder(w).Encode(response)
+// }
 
 func (h *handlerPost) CreatePost(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
@@ -92,7 +127,7 @@ func (h *handlerPost) CreatePost(w http.ResponseWriter, r *http.Request) {
 	post := models.Post{
 		Title:       request.Title,
 		Description: request.Description,
-		Photo:       filename,
+		Photo:       os.Getenv("PATH_FILE") + filename,
 		UserID:      userId,
 	}
 
@@ -114,9 +149,11 @@ func (h *handlerPost) CreatePost(w http.ResponseWriter, r *http.Request) {
 
 func convertResponsePost(u models.Post) models.PostResponse {
 	return models.PostResponse{
+		ID:          0,
 		Title:       u.Title,
 		Description: u.Description,
 		Photo:       u.Photo,
+		User:        u.User,
 	}
 }
 

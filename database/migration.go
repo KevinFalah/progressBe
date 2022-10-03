@@ -11,6 +11,7 @@ func RunMigration() {
 		&models.User{},
 		&models.Post{},
 		&models.Hired{},
+		&models.Following{},
 	)
 
 	if err != nil {

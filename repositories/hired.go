@@ -19,7 +19,7 @@ func RepositoryHired(db *gorm.DB) *repository {
 
 func (r *repository) FindHireds() ([]models.Hired, error) {
 	var hireds []models.Hired
-	err := r.db.Preload("User").Find(&hireds).Error
+	err := r.db.Preload("User").Preload("OrderTo").Find(&hireds).Error
 
 	return hireds, err
 }
